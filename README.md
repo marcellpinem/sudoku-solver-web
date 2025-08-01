@@ -6,7 +6,7 @@ Aplikasi web sederhana untuk menyelesaikan teka-teki Sudoku secara otomatis meng
 
 ## 🎥 DEMO
 
-[![Watch the demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://youtube.com.your-demo-link)
+[![Watch the demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://youtu.be/mEUOGRALGEw)
 
 _(Klik badge di atas untuk menonton demo)_
 
