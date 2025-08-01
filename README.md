@@ -27,8 +27,8 @@ _(Klik badge di atas untuk menonton demo)_
 1. **Clone repositori ini**
 
 ```bash
-git clone https://github.com/marcellpinem/sudoku-solver.git
-cd sudoku-solver
+git clone https://github.com/marcellpinem/sudoku-solver-web.git
+cd sudoku-solver-web
 ```
 
 2. **Jalankan aplikasi**
