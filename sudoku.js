@@ -31,7 +31,6 @@ function getBoard() {
       let id = r.toString() + "-" + c.toString();
       let val = document.getElementById(id).value;
 
-      // Jika kosong atau bukan angka, isi 0
       if (val === "" || isNaN(val)) {
         row.push(0);
       } else {
