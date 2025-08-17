@@ -4,11 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="sudoku.css" />
-    <script src="sudoku.js"></script>
+    <script src="sudoku.js" defer></script>
     <title>Sudoku Solver by Marcellino</title>
   </head>
   <body>
-    <div class="board"></div>
-    <button class="solver-button" onclick="solveSudokuUI()">Solve</button>
+    <div class="board-container">
+      <table class="board">
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="buttons">
+      <button onclick="solveSudoku()">Solve Board</button>
+      <button onclick="clearBoard()">Clear Board</button>
+    </div>
   </body>
 </html>

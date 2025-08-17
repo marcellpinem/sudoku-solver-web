@@ -3,112 +3,134 @@ window.onload = function () {
 };
 
 function setBoard() {
+  const tbody = document.querySelector(".board tbody");
   for (let r = 0; r < 9; r++) {
+    const tr = document.createElement("tr");
     for (let c = 0; c < 9; c++) {
-      let tile = document.createElement("input");
-      tile.id = r.toString() + "-" + c.toString();
+      const td = document.createElement("td");
+      const tile = document.createElement("input");
 
-      if (r == 2 || r == 5) {
-        tile.classList.add("horizontal-line");
-      }
+      tile.id = `${r}-${c}`;
+      tile.type = "text";
+      tile.inputMode = "numeric";
+      tile.pattern = "[1-9]";
+      tile.maxLength = 1;
 
-      if (c == 2 || c == 5) {
-        tile.classList.add("vertical-line");
-      }
+      tile.addEventListener("input", (e) => {
+        let val = e.target.value;
+        if (!/^[1-9]$/.test(val)) e.target.value = "";
+      });
 
-      tile.classList.add("tile");
-      document.querySelector(".board").appendChild(tile);
+      td.appendChild(tile);
+      tr.appendChild(td);
     }
+    tbody.appendChild(tr);
   }
 }
 
 function getBoard() {
   let board = [];
-
   for (let r = 0; r < 9; r++) {
     let row = [];
     for (let c = 0; c < 9; c++) {
-      let id = r.toString() + "-" + c.toString();
+      let id = `${r}-${c}`;
       let val = document.getElementById(id).value;
-
-      if (val === "" || isNaN(val)) {
-        row.push(0);
-      } else {
-        row.push(parseInt(val));
-      }
+      row.push(val === "" || isNaN(val) ? 0 : parseInt(val));
     }
     board.push(row);
   }
-
   return board;
 }
 
-function solveSudokuUI() {
-  const board = getBoard();
-
-  function findEmpty() {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        if (board[i][j] === 0) return [i, j];
+function hasConflict(board) {
+  for (let r = 0; r < 9; r++) {
+    const seen = new Set();
+    for (let c = 0; c < 9; c++) {
+      const v = board[r][c];
+      if (v === 0) continue;
+      if (seen.has(v)) return true;
+      seen.add(v);
+    }
+  }
+  for (let c = 0; c < 9; c++) {
+    const seen = new Set();
+    for (let r = 0; r < 9; r++) {
+      const v = board[r][c];
+      if (v === 0) continue;
+      if (seen.has(v)) return true;
+      seen.add(v);
+    }
+  }
+  for (let br = 0; br < 3; br++) {
+    for (let bc = 0; bc < 3; bc++) {
+      const seen = new Set();
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          const v = board[br * 3 + i][bc * 3 + j];
+          if (v === 0) continue;
+          if (seen.has(v)) return true;
+          seen.add(v);
+        }
       }
     }
+  }
+  return false;
+}
+
+function solveSudoku() {
+  const board = getBoard();
+  if (hasConflict(board)) {
+    alert("Tidak ada solusi (input bentrok).");
+    return;
+  }
+
+  function findEmpty() {
+    for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) if (board[i][j] === 0) return [i, j];
     return null;
   }
 
   function isValid(num, pos) {
     const [row, col] = pos;
-
     for (let i = 0; i < 9; i++) {
       if (board[row][i] === num && i !== col) return false;
-    }
-
-    for (let i = 0; i < 9; i++) {
       if (board[i][col] === num && i !== row) return false;
     }
-
     const boxRow = Math.floor(row / 3) * 3;
     const boxCol = Math.floor(col / 3) * 3;
-
-    for (let i = boxRow; i < boxRow + 3; i++) {
-      for (let j = boxCol; j < boxCol + 3; j++) {
-        if (board[i][j] === num && (i !== row || j !== col)) return false;
-      }
-    }
-
+    for (let i = boxRow; i < boxRow + 3; i++)
+      for (let j = boxCol; j < boxCol + 3; j++) if (board[i][j] === num && (i !== row || j !== col)) return false;
     return true;
   }
 
   function solve() {
     const currPos = findEmpty();
     if (!currPos) return true;
-
     const [row, col] = currPos;
-
     for (let num = 1; num <= 9; num++) {
       if (isValid(num, [row, col])) {
         board[row][col] = num;
-
         if (solve()) return true;
-
         board[row][col] = 0;
       }
     }
-
     return false;
   }
 
   if (solve()) {
-    updateBoardUI(board);
+    updateBoard(board);
   } else {
     alert("Tidak ada solusi untuk puzzle ini.");
   }
 }
 
-function updateBoardUI(board) {
-  for (let r = 0; r < 9; r++) {
+function updateBoard(board) {
+  for (let r = 0; r < 9; r++)
     for (let c = 0; c < 9; c++) {
-      let id = r.toString() + "-" + c.toString();
+      let id = `${r}-${c}`;
       document.getElementById(id).value = board[r][c] !== 0 ? board[r][c] : "";
     }
-  }
+}
+
+function clearBoard() {
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) document.getElementById(`${r}-${c}`).value = "";
 }
